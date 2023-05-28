@@ -12,6 +12,7 @@ Weather App Icon <br />
 
 The start screen requests for the user's location before calling the API using the coordinates.<br />
 
-<img src="https://github.com/MLisman5113/Weather-App/assets/72448287/dca92d10-40a6-4cc6-8e6c-46220c77f7c2" width="250"/><br />
+<img src="https://github.com/MLisman5113/Weather-App/assets/72448287/806c5f6f-9298-4d3e-bf75-c728fd5e7ca5" width="250"/><br />
+
 Using the OpenWeather API, the app presents different information about the weather in the user's area. The user also has the ability to refresh the page and receive the latest weather information with another API call using the refresh button in the top right corner. <br />
 
