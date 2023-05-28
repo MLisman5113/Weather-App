@@ -21,11 +21,10 @@ struct WelcomeView: View {
                   .scaledToFit()
                   .aspectRatio(contentMode: .fit)
                   .frame(width: 200)
-            
                 
-                Text("Providing you with the exact weather since 2023")
+                Text("AccuSky: The weather accuracy you need, right where you are")
                     .bold().font(.title)
-                Text("Please share your current location to get the weather in your area")
+                Text("Please share your current location to get the most up-to-date, accurate weather for your area")
                     .padding()
             }
             .multilineTextAlignment(.center)

@@ -58,4 +58,5 @@ struct ResponseBody: Decodable {
         var speed: Double
         var deg: Double
     }
+
 }

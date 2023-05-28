@@ -29,12 +29,62 @@ struct WeatherView: View {
                 
                 VStack {
                     HStack {
-                        VStack(spacing: 20) {
-                            Image(systemName: "sun.max")
-                                .font(.system(size:40))
-                            Text(weather!.weather[0].main)
+                        
+                        if weather!.weather[0].main == "Clouds"
+                        {
+                            VStack(spacing: 20) {
+                                Image(systemName: "cloud")
+                                    .font(.system(size:70))
+                                Text(weather!.weather[0].main)
+                            }
+                            .frame(width: 150, alignment: .leading)
                         }
-                        .frame(width: 150, alignment: .leading)
+                        else if weather!.weather[0].main == "Thunderstorm"
+                        {
+                            VStack(spacing: 20) {
+                                Image(systemName: "cloud.bolt.rain")
+                                    .font(.system(size:70))
+                                Text(weather!.weather[0].main)
+                            }
+                            .frame(width: 150, alignment: .leading)
+                        }
+                        else if weather!.weather[0].main == "Mist"
+                        {
+                            VStack(spacing: 20) {
+                                Image(systemName: "cloud.fog")
+                                    .font(.system(size:70))
+                                Text(weather!.weather[0].main)
+                            }
+                            .frame(width: 150, alignment: .leading)
+                        }
+                        else if weather!.weather[0].main == "Snow"
+                        {
+                            VStack(spacing: 20) {
+                                Image(systemName: "cloud.snow")
+                                    .font(.system(size:70))
+                                Text(weather!.weather[0].main)
+                            }
+                            .frame(width: 150, alignment: .leading)
+                        }
+                        else if weather!.weather[0].main == "Rain"
+                        {
+                            VStack(spacing: 20) {
+                                Image(systemName: "cloud.rain")
+                                    .font(.system(size:70))
+                                Text(weather!.weather[0].main)
+                            }
+                            .frame(width: 150, alignment: .leading)
+                        }
+                        else
+                        {
+                            VStack(spacing: 20) {
+                                Image(systemName: "sun.max")
+                                    .font(.system(size:40))
+                                Text(weather!.weather[0].main)
+                            }
+                            .frame(width: 150, alignment: .leading)
+                        }
+                            
                         
                         Spacer()
                         
@@ -46,8 +96,6 @@ struct WeatherView: View {
                 }
                 .frame(maxWidth: .infinity)
                 
-                Spacer()
-                    .frame(height: 80)
                 
                 AsyncImage(url: URL(string: "https://cdn.pixabay.com/photo/2020/01/24/21/33/city-4791269_960_720.png")) {
                     image in image
@@ -68,9 +116,12 @@ struct WeatherView: View {
                 Spacer()
                 
                 VStack(alignment: .leading, spacing:20) {
-                    Text("Weather now")
+                    Text("Weather Overview")
                         .bold().padding(.bottom)
                     
+                    HStack {
+                        WeatherRow(logo: "info.circle", name: "Description", value: (weather!.weather[0].description).capitalizedSentence)
+                    }
                     HStack {
                         Spacer()
                         WeatherRow(logo: "thermometer", name: "Minimum Temperature", value: (weather!.main.temp_min.roundDouble() + "º"))
@@ -80,7 +131,8 @@ struct WeatherView: View {
                     
                     HStack {
                         Spacer()
-                        WeatherRow(logo: "wind", name: "Wind Speed", value: (weather!.wind.speed.roundDouble() + " m/s"))
+                        WeatherRow(logo: "wind", name: "Wind Speed", value: (weather!.wind.speed.roundDouble())
+ + " mph")
                         WeatherRow(logo: "humidity", name: "Humidity", value: (weather!.main.humidity.roundDouble() + "%"))
                         Spacer()
                     }
@@ -101,25 +153,38 @@ struct WeatherView: View {
             ToolbarItem(placement: .primaryAction) {
                 Button(action: {
                     Task {
-                        if let location = locationManager.location {
-                            do {
+                        do {
+                            // Update location
+                            try await locationManager.requestLocation()
+                            
+                            // Then fetch weather
+                            if let location = locationManager.location {
                                 weather = try await weatherManager.getCurrentWeather(latitude: location.latitude, longitude: location.longitude)
-                            } catch {
-                                print("Error refreshing weather: \(error)")
                             }
+                        } catch {
+                            print("Error refreshing weather: \(error)")
                         }
                     }
                 }) {
                     Image(systemName: "arrow.clockwise").foregroundColor(.white)
+                        .font(.system(size:25))
                 }
             }
         }
     }
 }
 
+
 struct WeatherView_Previews: PreviewProvider {
+    static var previewWeather: ResponseBody {
+        return ResponseBody(coord: ResponseBody.CoordinatesResponse(lon: -0.13, lat: 51.51),
+                            weather: [ResponseBody.WeatherResponse(id: 1, main: "Clear", description: "clear sky", icon: "01d")],
+                            main: ResponseBody.MainResponse(temp: 289.92, feels_like: 289.3, temp_min: 288.71, temp_max: 291.15, pressure: 1015, humidity: 67),
+                            name: "London",
+                            wind: ResponseBody.WindResponse(speed: 1.54, deg: 340))
+    }
+
     static var previews: some View {
         WeatherView(weather: .constant(previewWeather))
     }
 }
-
